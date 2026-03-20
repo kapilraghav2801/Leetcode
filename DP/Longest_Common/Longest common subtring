@@ -1,0 +1,65 @@
+Step 1 — Pure Recursion
+pythondef lcs(X, Y, n, m, count):
+    if n == 0 or m == 0:
+        return count
+
+    if X[n-1] == Y[m-1]:
+        count = lcs(X, Y, n-1, m-1, count + 1)
+    else:
+        count = max(
+            lcs(X, Y, n-1, m, 0),
+            lcs(X, Y, n, m-1, 0)
+        )
+    return count
+
+Step 2 — Memoization (min changes from recursion)
+As we discussed — count makes clean memoization impossible. So the only change is: drop count, track ans globally.
+pythondef lcs(X, Y, n, m):
+    if n == 0 or m == 0:
+        return 0
+
+    if dp[n][m] != -1:          # ← added
+        return dp[n][m]
+
+    if X[n-1] == Y[m-1]:
+        dp[n][m] = 1 + lcs(X, Y, n-1, m-1)
+    else:
+        dp[n][m] = 0            # ← reset, don't recurse skips
+        
+    return dp[n][m]
+
+The else branch stores 0 and returns — no skip recursion. The global ans is updated after every resolved cell.
+
+
+Step 3 — Bottom Up (min changes from memoization)
+python# if n == 0 or m == 0: return 0       → first row/col already 0
+# if dp[n][m] != -1: return dp[n][m]  → loops handle order
+# recursive calls                      → dp[i-1][j-1] direct lookup
+
+for i in range(1, n+1):
+    for j in range(1, m+1):
+        if X[i-1] == Y[j-1]:
+            dp[i][j] = 1 + dp[i-1][j-1]
+            ans = max(ans, dp[i][j])
+        else:
+            dp[i][j] = 0
+
+Now printing the substring — plug into bottom-up
+pythondef longest_common_substring(X, Y):
+    n, m = len(X), len(Y)
+    dp = [[0] * (m+1) for _ in range(n+1)]
+    ans = 0
+    end_idx = 0        # ← track where the best streak ends in X
+
+    for i in range(1, n+1):
+        for j in range(1, m+1):
+            if X[i-1] == Y[j-1]:
+                dp[i][j] = 1 + dp[i-1][j-1]
+                if dp[i][j] > ans:
+                    ans = dp[i][j]
+                    end_idx = i        # ← i is 1-indexed, so substring ends at i-1
+            else:
+                dp[i][j] = 0
+      return count, X[end_index - count : end_index]
+    
+print(lcs(X,Y))

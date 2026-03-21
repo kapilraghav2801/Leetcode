@@ -24,4 +24,33 @@ class Solution:
         lcs = dp[n][m]
 
         return n + m - 2 * lcs
+
+# Min insertions to make word1 = word    len(s) - lcs
+def minInsertions(s):
+    n = len(s)
+    rev = s[::-1]
+
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if s[i-1] == rev[j-1]:
+                dp[i][j] = 1 + dp[i-1][j-1]
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+    lcs = dp[n][n]
+    return n - lcs
+
+print(minInsertions("abcd"))   # 3
+print(minInsertions("geeks"))  # 3
+print(minInsertions("aba"))    # 0
+| s       | reverse | LPS       | n - LPS | Output |
+| ------- | ------- | --------- | ------- | ------ |
+| "abcd"  | "dcba"  | 1 ("a")   | 4-1 = 3 | ✅      |
+| "geeks" | "skeeg" | 2 ("ee")  | 5-2 = 3 | ✅      |
+| "aba"   | "aba"   | 3 ("aba") | 3-3 = 0 | ✅      |
+
+
+
         

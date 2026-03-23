@@ -1,0 +1,18 @@
+def MCM_rec(arr, i, j):
+    if i >= j:
+        return 0 
+    ans = float('inf')
+    
+    for k in range(i,j):
+        temp_ans = MCM_rec(arr, i, k) + MCM_rec(arr, k+1, j) + (arr[i-1] * arr[k] * arr[j]) 
+        
+        ans = min(temp_ans, ans)
+        
+    return ans
+        
+        
+arr = [2,1,3,4] #20
+n = len(arr)
+result = MCM_rec(arr, 1, n-1)
+print(result)
+
